@@ -24,57 +24,92 @@ const sendWelcomeEmail = (username, email) => {
 };
 
 const user_register = async (req, res) => {
-  const { email, username, password } = req.body;
-  console.log(req.body);
+  try {
+    const { email, username, password } = req.body;
+    console.log(req.body);
 
-  if ((!username || !password, !email)) {
-    res.json({ message: "Please fill in all fields" });
-  } else {
-    pool.query(
-      "select username from users WHERE username = ?",
-      [username],
-      async (error, results) => {
-        if (error) {
-          console.log(results);
-        }
-        if (results.length > 0) {
-          res.json({ message: "That username is already in use" });
-          console.log("That username is already in use");
-        }
-      }
-    );
-    pool.query(
-      "select username from users WHERE email = ?",
-      [email],
-      async (error, results) => {
-        if (error) {
-          console.log(results);
-        }
-        if (results.length > 0) {
-          res.json({ message: "That email is already in use" });
-          console.log("That email is already in use");
-        }
-      }
-    );
-    let hashedPassword = await bcrypt.hash(password, 8);
+    if (!username || !password || !email) {
+      return res.status(400).json({ message: "Please fill in all fields" });
+    }
+
+    const usernameExists = await checkUsernameExists(username);
+    if (usernameExists) {
+      return res
+        .status(400)
+        .json({ message: "That username is already in use" });
+    }
+
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(400).json({ message: "That email is already in use" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 8);
     console.log(hashedPassword);
-    pool.query(
-      "INSERT INTO users SET ? ",
-      {
-        username: username,
-        password: hashedPassword,
-        email: email,
-      },
-      (error, results) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(results);
-          sendWelcomeEmail(username, email);
-          res.json({ message: "User registered" });
-        }
-      }
-    );
+
+    await insertUser(username, hashedPassword, email);
+
+    sendWelcomeEmail(username, email);
+
+    res.status(200).json({ message: "User registered" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred" });
   }
 };
+
+// Function to check if a username exists
+const checkUsernameExists = (username) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT username FROM users WHERE username = ?",
+      [username],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(results.length > 0);
+        }
+      }
+    );
+  });
+};
+
+// Function to check if an email exists
+const checkEmailExists = (email) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT email FROM users WHERE email = ?",
+      [email],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(results.length > 0);
+        }
+      }
+    );
+  });
+};
+
+// Function to insert a user
+const insertUser = (username, password, email) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "INSERT INTO users SET ?",
+      { username, password, email },
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      }
+    );
+  });
+};
+
 export default user_register;
