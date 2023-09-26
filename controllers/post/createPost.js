@@ -1,10 +1,12 @@
 import pool from "../../database/dbConnection.js";
 
 const createPost = (req, res) => {
-  const { content, user_id } = req.body;
+  const { id } = req.decoded.user_id;
+  console.log(id);
+  const { content } = req.body;
   const newPost = {
     content,
-    user_id,
+    user_id: id,
   };
   try {
     const result = pool.query("INSERT INTO posts SET ?", newPost);
