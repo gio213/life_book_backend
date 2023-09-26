@@ -1,15 +1,14 @@
 import pool from "../../database/dbConnection.js";
 
 const post_like_by_post_id = (req, res) => {
+  const { id } = req.decoded.user_id;
+  console.log(id);
   const post_id = req.params.id;
-  const user_id = req.body.user_id;
-  console.log("post_id", post_id);
-  console.log("user_id", user_id);
   // check if user already liked this post
 
   // if not, add like
   pool.query(
-    `SELECT * FROM likes WHERE post_id = ${post_id} AND user_id = ${user_id}`,
+    `SELECT * FROM likes WHERE post_id = ${post_id} AND user_id = ${id}`,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -19,7 +18,7 @@ const post_like_by_post_id = (req, res) => {
           res.status(403).json({ message: "You already liked this post" });
         } else {
           pool.query(
-            `INSERT INTO likes (post_id, user_id) VALUES (${post_id}, ${user_id})`,
+            `INSERT INTO likes (post_id, user_id) VALUES (${post_id}, ${id})`,
             (err, result) => {
               if (err) {
                 console.log(err);

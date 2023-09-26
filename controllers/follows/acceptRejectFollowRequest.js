@@ -1,52 +1,37 @@
 import pool from "../../database/dbConnection.js";
 
 const acceptRejectFollowRequest = (req, res) => {
-  const request_id = req.body.request_id;
+  const { id } = req.decoded.user_id;
   const accepted = req.body.accepted;
+  const request_id = req.params.requestID;
+  console.log(id, accepted, request_id);
+  /// get all from followers with request_id
 
-  /// get all from follow request with request_id
-  pool.query(
-    "SELECT * FROM followers WHERE request_id = ?",
-    request_id,
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(500).json("Server error");
-      }
-      const follower_id = result[0].follower_id;
-      const followee_id = result[0].followee_id;
-
-      if (accepted === "1") {
-        pool.query(
-          "UPDATE followers SET accepted = ? WHERE request_id = ?",
-          [accepted, request_id],
-          (err, result) => {
-            if (err) {
-              console.log(err);
-              res.status(500).json("Server error");
-            }
-            res.json({
-              message: ` User ${followee_id} accepted follow request`,
-            });
-          }
-        );
-      } else if (accepted === "0") {
-        pool.query(
-          "UPDATE followers SET accepted = ? WHERE request_id = ?",
-          [accepted, request_id],
-          (err, result) => {
-            if (err) {
-              console.log(err);
-              res.status(500).json("Server error");
-            }
-            res.json({
-              message: ` User ${followee_id} rejected follow request`,
-            });
-          }
-        );
-      }
+  const query = `SELECT * FROM followers WHERE request_id = ${request_id}`;
+  pool.query(query, (err, result) => {
+    if (accepted === "1") {
+      console.log("accepted");
+      const query = `UPDATE followers SET accepted = ${accepted} WHERE request_id = ${request_id}`;
+      pool.query(query, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(result);
+          res.status(200).json({ message: "accepted" });
+        }
+      });
+    } else {
+      const query = `UPDATE followers SET accepted = ${accepted} WHERE request_id = ${request_id}`;
+      pool.query(query, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(result);
+          res.status(200).json({ message: "rejected" });
+        }
+      });
     }
-  );
+  });
 };
 
 export default acceptRejectFollowRequest;

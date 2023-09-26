@@ -15,7 +15,7 @@ import swaggerUi from "swagger-ui-express";
 const options = {
   swaggerDefinition: {
     info: {
-      title: "Social Media App",
+      title: "Social Media App LIfebook API",
       version: "1.0.0",
       description: "A social media app with a REST API",
       contact: {
@@ -38,7 +38,7 @@ const specs = swaggerJSDoc(options);
 
 app.use("/api", router);
 app.use(
-  "/api-docs",
+  "/api/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs, { explorer: true })
 );

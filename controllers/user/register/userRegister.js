@@ -2,7 +2,6 @@ import pool from "../../../database/dbConnection.js";
 import bcrypt from "bcrypt";
 import env from "dotenv";
 env.config({ path: "./.env" });
-import nodemailer from "../../../config/nodemailer.js";
 import transporter from "../../../config/nodemailer.js";
 
 const sendWelcomeEmail = (username, email) => {

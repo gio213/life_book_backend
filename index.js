@@ -12,7 +12,7 @@ import post_like from "./routes/likes/postLikeByPostId.js";
 import unlike_post_by_id from "./routes/likes/unlikePostById.js";
 import create_comment_by_post_id from "./routes/comments/createCommentByPostId.js";
 import delete_comment_by_id from "./routes/comments/delete_comment_by_id.js";
-import edit_comment_by_comment_id from "./routes/comments/edit_post_by_post_id.js";
+import edit_comment from "./routes/comments/edit_comment.js";
 import follow_user_id from "./routes/follows/follow_user_id.js";
 import unfollow_user_id from "./routes/follows/unFollow_user_id.js";
 import acceptRejectFollowRequest from "./routes/follows/acceptRejectFollowRequest.js";
@@ -24,43 +24,46 @@ import user_pass_reset from "./routes/password reset/user_pass_reset.js";
 router.post("/user_register", user_register);
 // user login
 router.post("/user_login", user_login);
-// get current user profile
+// get current user profile protected route
 router.get("/current_user", getCurrenAuthUserProfile);
 // get user by id
 router.get("/get_user/:id", getUserById);
-// create post
+// create post protected route
 router.post("/create_post", createPost);
-// get post by its id
+// get post by its id protected route
 router.get("/get_post/:id", get_post_by_post_id);
-// edit post by its id
+// edit post by its id protected route
 router.put("/edit_post/:id", edit_post_by_id);
-// delete post by its id
+// delete post by its id protected route
 router.delete("/delete_post/:id", delete_post_by_id);
-// get news feed for auth user
+// get news feed for auth user protected route
 router.get("/get_feed_for_auth_user", get_feed_for_auth_user);
-// post like by post id
+// post like by post id protected route
 router.post("/post_like/:id", post_like);
-// unlike post by post id
+// unlike post by post id protected route
 router.delete("/unlike_post/:id", unlike_post_by_id);
-// create comment by post id
+// create comment by post id protected route
 router.post("/create_comment/:id", create_comment_by_post_id);
-// delete comment by id
+// delete comment by id protected route
 router.delete("/delete_comment/:id", delete_comment_by_id);
-// edit comment by comment id
-router.put("/edit_comment/:id", edit_comment_by_comment_id);
-// follow user by id
+// edit comment by comment id protected route
+router.put("/edit_comment/:id", edit_comment);
+// follow user by id protected route
 router.post("/follow_user_id", follow_user_id);
-// unfollow user by id
+// unfollow user by id protected route
 router.delete("/unfollow_user_id", unfollow_user_id);
-// accept reject follow request
-router.put("/accept_reject_follow_request", acceptRejectFollowRequest);
-// get current user followers
+// accept reject follow request protected route
+router.put(
+  "/accept_reject_follow_request/:requestID",
+  acceptRejectFollowRequest
+);
+// get current user followers protected route
 router.get("/get_current_user_followers", getCurrentUserFollowers);
-// user search
+// user search protected route
 router.get("/user_search", userSearch);
 // user log out
 router.get("/user_logout", user_log_out);
-// user password reset
+// user password reset protected route
 router.put("/password_reset", user_pass_reset);
 
 export default router;

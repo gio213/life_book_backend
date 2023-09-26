@@ -1,19 +1,22 @@
 import pool from "../../database/dbConnection.js";
 
 const unlike_post_by_id = (req, res) => {
+  const { id } = req.decoded.user_id;
+  console.log(id);
   const post_id = req.params.id;
-  const user_id = req.body.user_id;
-  // check if user already liked this post
+  // first check if post has a like from this user
   pool.query(
-    `SELECT * FROM likes WHERE post_id = ${post_id} AND user_id = ${user_id}`,
+    `SELECT * FROM likes WHERE post_id = ${post_id} AND user_id = ${id}`,
     (err, result) => {
       if (err) {
         console.log(err);
         res.status(500).json({ message: "Server error" });
       } else {
-        if (result.length > 0) {
+        if (result.length === 0) {
+          res.status(403).json({ message: "You did not like this post" });
+        } else {
           pool.query(
-            `DELETE FROM likes WHERE post_id = ${post_id} AND user_id = ${user_id}`,
+            `DELETE FROM likes WHERE post_id = ${post_id} AND user_id = ${id}`,
             (err, result) => {
               if (err) {
                 console.log(err);
@@ -23,8 +26,6 @@ const unlike_post_by_id = (req, res) => {
               }
             }
           );
-        } else {
-          res.status(403).json({ message: "You haven't liked this post" });
         }
       }
     }

@@ -1,13 +1,12 @@
 import pool from "../../database/dbConnection.js";
 
 const create_comment_by_post_id = (req, res) => {
+  const { id } = req.decoded.user_id;
   const post_id = req.params.id;
-  const user_id = req.body.user_id;
   const comment = req.body.content;
-  console.log(post_id, user_id, comment);
 
   pool.query(
-    `INSERT INTO comments (post_id, user_id, content) VALUES (${post_id}, ${user_id}, '${comment}')`,
+    `INSERT INTO comments (post_id, user_id, content) VALUES (${post_id}, ${id}, '${comment}')`,
     (err, result) => {
       if (err) {
         console.log(err);
