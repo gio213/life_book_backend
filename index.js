@@ -17,6 +17,9 @@ import follow_user_id from "./routes/follows/follow_user_id.js";
 import unfollow_user_id from "./routes/follows/unFollow_user_id.js";
 import acceptRejectFollowRequest from "./routes/follows/acceptRejectFollowRequest.js";
 import getCurrentUserFollowers from "./routes/follows/getCurrentUserFollowers.js";
+import userSearch from "./routes/user search/userSearch.js";
+import user_log_out from "./routes/user logout/userLogOut.js";
+import user_pass_reset from "./routes/password reset/user_pass_reset.js";
 // user register
 router.post("/user_register", user_register);
 // user login
@@ -53,4 +56,11 @@ router.delete("/unfollow_user_id", unfollow_user_id);
 router.put("/accept_reject_follow_request", acceptRejectFollowRequest);
 // get current user followers
 router.get("/get_current_user_followers", getCurrentUserFollowers);
+// user search
+router.get("/user_search", userSearch);
+// user log out
+router.get("/user_logout", user_log_out);
+// user password reset
+router.put("/password_reset", user_pass_reset);
+
 export default router;
