@@ -43,8 +43,11 @@ const user_register = async (req, res) => {
       return res.status(400).json({ message: "That email is already in use" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 8);
-    console.log(hashedPassword);
+    // const hashedPassword = await bcrypt.hash(password, 8);
+    // console.log(hashedPassword);
+    // salted password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     await insertUser(username, hashedPassword, email);
 
