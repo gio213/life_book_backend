@@ -24,10 +24,10 @@ const sendWelcomeEmail = (username, email) => {
 
 const user_register = async (req, res) => {
   try {
-    const { email, username, password } = req.body;
+    const { email, username, password, gender, birth_date } = req.body;
     console.log(req.body);
 
-    if (!username || !password || !email) {
+    if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
 
@@ -49,7 +49,8 @@ const user_register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await insertUser(username, hashedPassword, email);
+    await insertUser(username, hashedPassword, email, gender, birth_date);
+    console.log(username, email, hashedPassword, gender, birth_date);
 
     sendWelcomeEmail(username, email);
 
@@ -97,11 +98,11 @@ const checkEmailExists = (email) => {
 };
 
 // Function to insert a user
-const insertUser = (username, password, email) => {
+const insertUser = (username, password, email, gender, birth_date) => {
   return new Promise((resolve, reject) => {
     pool.query(
       "INSERT INTO users SET ?",
-      { username, password, email },
+      { username, password, email, gender, birth_date },
       (error, results) => {
         if (error) {
           console.error(error);
