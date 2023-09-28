@@ -26,9 +26,14 @@ const user_register = async (req, res) => {
   try {
     const { email, username, password, gender, birth_date } = req.body;
     console.log(req.body);
+    const profile_picture = req.file;
 
     if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });
+    } else if (profile_picture) {
+      return res
+        .status(400)
+        .json({ message: "Please upload a profile picture" });
     }
 
     const usernameExists = await checkUsernameExists(username);
