@@ -26,14 +26,11 @@ const user_register = async (req, res) => {
   try {
     const { email, username, password, gender, birth_date } = req.body;
     console.log(req.body);
-    const profile_picture = req.file;
+    const profilePictureName = req.file.filename;
+    console.log(profilePictureName);
 
     if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });
-    } else if (profile_picture) {
-      return res
-        .status(400)
-        .json({ message: "Please upload a profile picture" });
     }
 
     const usernameExists = await checkUsernameExists(username);
@@ -54,8 +51,22 @@ const user_register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await insertUser(username, hashedPassword, email, gender, birth_date);
-    console.log(username, email, hashedPassword, gender, birth_date);
+    await insertUser(
+      username,
+      hashedPassword,
+      email,
+      gender,
+      birth_date,
+      profilePictureName
+    );
+    console.log(
+      username,
+      email,
+      hashedPassword,
+      gender,
+      birth_date,
+      profilePictureName
+    );
 
     sendWelcomeEmail(username, email);
 
@@ -103,11 +114,18 @@ const checkEmailExists = (email) => {
 };
 
 // Function to insert a user
-const insertUser = (username, password, email, gender, birth_date) => {
+const insertUser = (
+  username,
+  password,
+  email,
+  gender,
+  birth_date,
+  profilePictureName
+) => {
   return new Promise((resolve, reject) => {
     pool.query(
       "INSERT INTO users SET ?",
-      { username, password, email, gender, birth_date },
+      { username, password, email, gender, birth_date, profilePictureName },
       (error, results) => {
         if (error) {
           console.error(error);
