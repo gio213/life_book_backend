@@ -26,8 +26,9 @@ const user_register = async (req, res) => {
   try {
     const { email, username, password, gender, birth_date } = req.body;
     console.log(req.body);
-    const profilePictureName = req.file.filename;
-    console.log(profilePictureName);
+    const picture = req.file;
+    const profile_picture = picture ? picture.filename : "default.png";
+    console.log(profile_picture);
 
     if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });
@@ -57,7 +58,7 @@ const user_register = async (req, res) => {
       email,
       gender,
       birth_date,
-      profilePictureName
+      profile_picture
     );
     console.log(
       username,
@@ -65,7 +66,7 @@ const user_register = async (req, res) => {
       hashedPassword,
       gender,
       birth_date,
-      profilePictureName
+      profile_picture
     );
 
     sendWelcomeEmail(username, email);
@@ -120,12 +121,12 @@ const insertUser = (
   email,
   gender,
   birth_date,
-  profilePictureName
+  profile_picture
 ) => {
   return new Promise((resolve, reject) => {
     pool.query(
       "INSERT INTO users SET ?",
-      { username, password, email, gender, birth_date, profilePictureName },
+      { username, password, email, gender, birth_date, profile_picture },
       (error, results) => {
         if (error) {
           console.error(error);
