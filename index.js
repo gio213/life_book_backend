@@ -60,7 +60,7 @@ router.put(
 // get current user followers protected route
 router.get("/get_current_user_followers", getCurrentUserFollowers);
 // user search protected route
-router.get("/user_search", userSearch);
+router.post("/user_search", userSearch);
 // user log out
 router.get("/user_logout", user_log_out);
 // user password reset protected route

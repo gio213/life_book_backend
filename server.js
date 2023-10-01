@@ -1,10 +1,12 @@
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 import env from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 env.config({ path: "./.env" });
 import router from "./index.js";
 import cors from "cors";
-
+import swagerData from "./swaggerData.js";
 const app = express();
 
 app.use(express.json());
@@ -19,9 +21,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use("/api", router);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagerData));
 
 let port = process.env.PORT || 3000;
 console.log(port);
-app.listen(port, () => {
+app.listen(3000, () => {
   console.log(`Server is running on port ${port}...`);
 });
