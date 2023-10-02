@@ -11,7 +11,7 @@ const jsdonData = {
     },
   },
 
-  host: "https://lifebookbackend.up.railway.app",
+  host: "lifebookbackend.up.railway.app",
   basePath: "/",
   schemes: ["http", "https"],
 
