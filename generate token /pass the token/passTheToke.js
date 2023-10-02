@@ -8,8 +8,8 @@ const passToken = (req, res, next) => {
     token = token.split(" ")[1];
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        console.log("Invalid token");
         console.log(token);
+        console.log("Invalid token");
         res.json({ message: "Invalid token" });
       } else {
         req.decoded = decoded;
