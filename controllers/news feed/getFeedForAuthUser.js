@@ -3,7 +3,7 @@ import pool from "../../database/dbConnection.js";
 const get_feed_for_auth_user = async (req, res) => {
   const { id } = req.decoded.user_id;
   const query = `
-      SELECT posts.*, users.username
+      SELECT posts.*, users.username as author
 FROM followers
 JOIN posts ON followers.follower_id = posts.user_id
 JOIN users ON users.user_id = posts.user_id
@@ -12,7 +12,7 @@ WHERE followers.followee_id = ${id}
 
 UNION
 
-SELECT posts.*, users.username
+SELECT posts.*, users.username as author
 FROM followers
 JOIN posts ON followers.followee_id = posts.user_id
 JOIN users ON users.user_id = posts.user_id
