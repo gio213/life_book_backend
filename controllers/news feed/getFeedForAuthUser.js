@@ -3,24 +3,23 @@ import pool from "../../database/dbConnection.js";
 const get_feed_for_auth_user = async (req, res) => {
   const { id } = req.decoded.user_id;
   const query = `
-  -- Query to retrieve posts from users who are followers of a specific user
-SELECT posts.*
+      SELECT posts.*, users.username
 FROM followers
 JOIN posts ON followers.follower_id = posts.user_id
+JOIN users ON users.user_id = posts.user_id
 WHERE followers.followee_id = ${id}
-  AND followers.accepted = TRUE
+  AND followers.accepted = 1
 
-UNION  -- Use UNION to combine results
+UNION
 
--- Query to retrieve posts from users who are being followed by a specific user
-SELECT posts.*
+SELECT posts.*, users.username
 FROM followers
 JOIN posts ON followers.followee_id = posts.user_id
+JOIN users ON users.user_id = posts.user_id
 WHERE followers.follower_id = ${id}
-  AND followers.accepted = TRUE
+  AND followers.accepted = 1
 
-ORDER BY created_at DESC;  -- Order the combined result by created_at
-
+ORDER BY created_at DESC;
 
   `;
   console.log(query);
