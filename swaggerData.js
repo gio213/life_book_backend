@@ -11,7 +11,7 @@ const jsdonData = {
     },
   },
 
-  host: "localhost:3000",
+  host: "lifebookbackend.up.railway.app/api-docs",
   basePath: "/",
   schemes: ["http", "https"],
 

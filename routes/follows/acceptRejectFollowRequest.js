@@ -4,7 +4,7 @@ import express from "express";
 const router = express.Router();
 
 router.put(
-  "/accept_reject_follow_request/:requestID",
+  "/accept_reject_follow_request",
   passToken,
   acceptRejectFollowRequest
 );

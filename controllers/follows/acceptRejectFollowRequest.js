@@ -2,36 +2,47 @@ import pool from "../../database/dbConnection.js";
 
 const acceptRejectFollowRequest = (req, res) => {
   const { id } = req.decoded.user_id;
-  const accepted = req.body.accepted;
-  const request_id = req.params.requestID;
-  console.log(id, accepted, request_id);
-  /// get all from followers with request_id
+  const { followerId, action } = req.body; // Assuming you send the follower's ID and action (accept or reject) in the request body
 
-  const query = `SELECT * FROM followers WHERE request_id = ${request_id}`;
-  pool.query(query, (err, result) => {
-    if (accepted === "1") {
-      console.log("accepted");
-      const query = `UPDATE followers SET accepted = ${accepted} WHERE request_id = ${request_id}`;
-      pool.query(query, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(result);
-          res.status(200).json({ message: "accepted" });
-        }
-      });
-    } else {
-      const query = `UPDATE followers SET accepted = ${accepted} WHERE request_id = ${request_id}`;
-      pool.query(query, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(result);
-          res.status(200).json({ message: "rejected" });
-        }
-      });
-    }
-  });
+  if (action === "1") {
+    // Accept the follow request
+    const acceptQuery = `
+      UPDATE followers
+      SET accepted = 1
+      WHERE follower_id = ${followerId}
+        AND followee_id = ${id};
+    `;
+
+    pool.query(acceptQuery, [followerId, id], (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // Respond with a success message for acceptance
+      res.json({ message: "Follow request accepted" });
+    });
+  } else if (action === "0") {
+    // Reject the follow request
+    const rejectQuery = `
+      DELETE FROM followers
+      WHERE follower_id = ${followerId}
+        AND followee_id = ${id};
+    `;
+
+    pool.query(rejectQuery, [followerId, id], (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // Respond with a success message for rejection
+      res.json({ message: "Follow request rejected" });
+    });
+  } else {
+    // Handle invalid or unsupported actions
+    res.status(400).json({ error: "Invalid action" });
+  }
 };
 
 export default acceptRejectFollowRequest;
