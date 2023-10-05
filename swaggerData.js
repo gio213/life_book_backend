@@ -11,7 +11,7 @@ const jsdonData = {
     },
   },
 
-  host: "lifebookbackend.up.railway.app",
+  host: "localhost:3000",
   basePath: "/",
   schemes: ["http", "https"],
 
@@ -20,7 +20,7 @@ const jsdonData = {
       type: "apiKey",
       name: "Authorization",
       scheme: "bearer",
-      in: "header",
+      in: "headers",
       bearerFormat: "JWT",
     },
   },
@@ -303,7 +303,7 @@ const jsdonData = {
         },
       },
     },
-    "/api/get_current_user_followers": {
+    "/api/current_user": {
       get: {
         summary: "Get the profile of the currently authenticated user",
         description:
@@ -351,6 +351,7 @@ const jsdonData = {
         summary: "Get user by ID",
         description: "Retrieve a user's information by their ID.",
         tags: ["User"],
+
         parameters: [
           {
             name: "id",

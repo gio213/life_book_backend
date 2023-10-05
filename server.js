@@ -17,7 +17,6 @@ const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   Credentials: true,
-  exposedHeaders: ["x-auth-token"],
 };
 app.use(cors(corsOptions));
 
@@ -26,6 +25,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagerData));
 
 let port = process.env.PORT || 3000;
 console.log(port);
-app.listen(port, () => {
+app.listen(3000, () => {
   console.log(`Server is running on port ${port}...`);
 });
