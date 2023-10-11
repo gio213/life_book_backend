@@ -48,10 +48,9 @@ const user_register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Upload the profile picture to Cloudinary
-    let profile_picture = null; // Initialize as null
+    let profile_picture = null;
     if (picture) {
-      // Use the URL provided by Cloudinary
-      profile_picture = picture.secure_url;
+      profile_picture = picture.path;
       console.log(profile_picture);
     }
 
