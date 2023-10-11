@@ -25,10 +25,7 @@ const sendWelcomeEmail = (username, email) => {
 const user_register = async (req, res) => {
   try {
     const { email, username, password, gender, birth_date } = req.body;
-    console.log(req.body);
-    const picture = req.file;
-    const profile_picture = picture ? picture.filename : "default.png";
-    console.log(profile_picture);
+    const picture = req.file; // Uploaded file
 
     if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });
@@ -46,24 +43,21 @@ const user_register = async (req, res) => {
       return res.status(400).json({ message: "That email is already in use" });
     }
 
-    // const hashedPassword = await bcrypt.hash(password, 8);
-    // console.log(hashedPassword);
-    // salted password
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Upload the profile picture to Cloudinary
+    let profile_picture = null; // Initialize as null
+    if (picture) {
+      profile_picture = picture.path; // Use the Cloudinary URL
+    }
+
+    // Insert the user data into the database
     await insertUser(
       username,
       hashedPassword,
       email,
-      gender,
-      birth_date,
-      profile_picture
-    );
-    console.log(
-      username,
-      email,
-      hashedPassword,
       gender,
       birth_date,
       profile_picture

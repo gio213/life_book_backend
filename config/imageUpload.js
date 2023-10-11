@@ -1,31 +1,32 @@
 import multer from "multer";
-import path from "path";
+import cloudinary from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Destination folder for uploaded files
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname); // Custom file name
+// cloudinary.config({
+//   cloud_name: "dimy1fj2c",
+//   api_key: "572831746818761",
+//   api_secret: "Cywf6-VRQFrWfwvKumeKZwlWmeM",
+// });
+// const storage = new CloudinaryStorage({
+//   cloudinary,
+//   folder: "uploads",
+//   allowedFormats: ["jpg", "png", "jpeg", "gif"],
+//   transformation: [{ width: 500, height: 500, crop: "limit" }],
+// });
+
+cloudinary.v2.config({
+  cloud_name: "dimy1fj2c",
+  api_key: "572831746818761",
+  api_secret: "Cywf6-VRQFrWfwvKumeKZwlWmeM",
+});
+
+// Set up Multer for file upload to Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary.v2,
+  params: {
+    folder: "profile_pictures", // Optional: Organize images in a folder
   },
 });
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // 5MB file size limit
-  fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif/;
-    const extName = fileTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimeType = fileTypes.test(file.mimetype);
-
-    if (extName && mimeType) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .jpg, .jpeg, .png and .gif file formats allowed"));
-    }
-  },
-});
-
+const upload = multer({ storage: storage });
 export default upload;
