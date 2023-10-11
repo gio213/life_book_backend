@@ -1,23 +1,13 @@
 import multer from "multer";
 import cloudinary from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
-
-// cloudinary.config({
-//   cloud_name: "dimy1fj2c",
-//   api_key: "572831746818761",
-//   api_secret: "Cywf6-VRQFrWfwvKumeKZwlWmeM",
-// });
-// const storage = new CloudinaryStorage({
-//   cloudinary,
-//   folder: "uploads",
-//   allowedFormats: ["jpg", "png", "jpeg", "gif"],
-//   transformation: [{ width: 500, height: 500, crop: "limit" }],
-// });
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
 
 cloudinary.v2.config({
-  cloud_name: "dimy1fj2c",
-  api_key: "572831746818761",
-  api_secret: "Cywf6-VRQFrWfwvKumeKZwlWmeM",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 // Set up Multer for file upload to Cloudinary
