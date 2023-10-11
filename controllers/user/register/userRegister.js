@@ -50,7 +50,9 @@ const user_register = async (req, res) => {
     // Upload the profile picture to Cloudinary
     let profile_picture = null; // Initialize as null
     if (picture) {
-      profile_picture = picture.path; // Use the Cloudinary URL
+      // Use the URL provided by Cloudinary
+      profile_picture = picture.secure_url;
+      console.log(profile_picture);
     }
 
     // Insert the user data into the database
