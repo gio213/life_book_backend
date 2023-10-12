@@ -25,7 +25,7 @@ const sendWelcomeEmail = (username, email) => {
 const user_register = async (req, res) => {
   try {
     const { email, username, password, gender, birth_date } = req.body;
-    const picture = req.file; // Uploaded file
+    const picture = req.file;
 
     if (!username || !password || !email || !gender || !birth_date) {
       return res.status(400).json({ message: "Please fill in all fields" });

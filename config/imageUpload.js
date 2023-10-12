@@ -14,7 +14,7 @@ cloudinary.v2.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
-    folder: "profile_pictures", // Optional: Organize images in a folder
+    folder: "profile_pictures",
   },
 });
 
