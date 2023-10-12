@@ -3,7 +3,8 @@ import pool from "../../../database/dbConnection.js";
 const userSearch = (req, res) => {
   const userId = req.decoded.user_id;
 
-  const userName = req.query.username;
+  const userName = req.body.username;
+  console.log(userName);
 
   if (!userName) {
     return res.status(400).json("Username parameter is missing or empty.");
