@@ -6,7 +6,7 @@ const get_feed_for_auth_user = async (req, res) => {
   SELECT
     posts.*,
     users.username as author,
-    users.profile_picture as profile_picture
+    users.profile_picture as profilePicture
   FROM
     followers
     JOIN posts ON followers.follower_id = posts.user_id
@@ -20,7 +20,7 @@ const get_feed_for_auth_user = async (req, res) => {
   SELECT
     posts.*,
     users.username as author,
-    users.profile_picture as profile_picture
+    users.profile_picture as profilePicture
   FROM
     followers
     JOIN posts ON followers.followee_id = posts.user_id
