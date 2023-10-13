@@ -8,12 +8,10 @@ const get_feed_for_auth_user = async (req, res) => {
     users.username as author,
     users.profile_picture as profilePicture
   FROM
-    followers
-    JOIN posts ON followers.follower_id = posts.user_id
+    posts
     JOIN users ON users.user_id = posts.user_id
   WHERE
-    (followers.followee_id = ${id} OR posts.user_id = ${id})
-    AND followers.accepted = 1
+    posts.user_id = ${id} -- User's own posts
 
   UNION
 
@@ -22,12 +20,24 @@ const get_feed_for_auth_user = async (req, res) => {
     users.username as author,
     users.profile_picture as profilePicture
   FROM
-    followers
-    JOIN posts ON followers.followee_id = posts.user_id
+    posts
+    JOIN followers ON followers.followee_id = posts.user_id
     JOIN users ON users.user_id = posts.user_id
   WHERE
-    (followers.followee_id = ${id} OR posts.user_id = ${id})
-    AND followers.accepted = 1
+    (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
+
+  UNION
+
+  SELECT
+    posts.*,
+    users.username as author,
+    users.profile_picture as profilePicture
+  FROM
+    posts
+    JOIN followers ON followers.follower_id = posts.user_id
+    JOIN users ON users.user_id = posts.user_id
+  WHERE
+    (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
 
   ORDER BY created_at DESC;
 `;
