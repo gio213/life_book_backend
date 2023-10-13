@@ -1,16 +1,24 @@
 import pool from "../../database/dbConnection.js";
 
-const follow_user_id = (req, res) => {
-  const { id } = req.decoded.user_id;
-  const followee = req.body.followee;
-  console.log(`user ${id}  followe ${followee}`);
-  const sql = `INSERT INTO followers (follower_id, followee_id) VALUES (?, ?)`;
-  pool.query(sql, [id, followee], (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json("Server error");
+const followUserId = async (req, res) => {
+  try {
+    const { id } = req.decoded.user_id;
+    const followee = req.body.followee;
+
+    if (!followee) {
+      return res.status(400).json({ error: "Invalid 'followee' ID" });
     }
-    res.status(200).json(`user ${id} sent  follow request to user ${followee}`);
-  });
+
+    const sql = `INSERT INTO followers (follower_id, followee_id) VALUES (?, ?)`;
+    await pool.query(sql, [id, followee]);
+
+    res
+      .status(200)
+      .json(`User ${id} sent a follow request to user ${followee}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
-export default follow_user_id;
+
+export default followUserId;
