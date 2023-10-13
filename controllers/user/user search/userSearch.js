@@ -1,7 +1,8 @@
 import pool from "../../../database/dbConnection.js";
 
 const userSearch = (req, res) => {
-  const userId = req.decoded.user_id;
+  const { id } = req.decoded.user_id;
+  console.log(id);
 
   const userName = req.body.username;
   console.log(userName);
@@ -10,10 +11,27 @@ const userSearch = (req, res) => {
     return res.status(400).json("Username parameter is missing or empty.");
   }
 
-  const sql = "SELECT * FROM users WHERE username LIKE ?";
   const searchPattern = `%${userName}%`;
 
-  pool.query(sql, [searchPattern], (err, result) => {
+  const sql = `
+  SELECT users.*,
+         CASE
+            WHEN followers.accepted = 1 THEN 'Following'
+            WHEN followers.accepted = 0 THEN 'Follow Request Pending'
+            ELSE 'Not Following'
+         END AS follow_status
+  FROM users
+  LEFT JOIN (
+    SELECT followee_id, accepted
+    FROM followers
+    WHERE follower_id = ${id}
+  ) AS followers
+  ON users.user_id = followers.followee_id
+  WHERE username LIKE '${searchPattern}'
+  AND users.user_id != ${id};
+`;
+
+  pool.query(sql, (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json("Server error");
