@@ -3,7 +3,7 @@ import passToken from "../../generate token /pass the token/passTheToke.js";
 import express from "express";
 const router = express.Router();
 
-router.put(
+router.post(
   "/accept_reject_follow_request",
   passToken,
   acceptRejectFollowRequest

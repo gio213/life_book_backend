@@ -1,47 +1,33 @@
 import pool from "../../database/dbConnection.js";
 
 const acceptRejectFollowRequest = (req, res) => {
-  const { id } = req.decoded.user_id;
-  const { followerId, action } = req.body; // Assuming you send the follower's ID and action (accept or reject) in the request body
-
-  if (action === "1") {
-    // Accept the follow request
-    const acceptQuery = `
-      UPDATE followers
-      SET accepted = 1
-      WHERE follower_id = ${followerId}
-        AND followee_id = ${id};
-    `;
-
-    pool.query(acceptQuery, [followerId, id], (error) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+  const {
+    user_id: { id },
+  } = req.decoded;
+  const { follower_id, accepted } = req.body;
+  console.log(id);
+  if (accepted === "1") {
+    const query = ` INSERT INTO followers (follower_id, followee_id, accepted)
+VALUES (${id}, ${follower_id}, 1);
+`;
+    pool.query(query, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json("Server error");
+      } else {
+        return res.status(200).json("Follow request accepted");
       }
-
-      // Respond with a success message for acceptance
-      res.json({ message: "Follow request accepted" });
-    });
-  } else if (action === "0") {
-    // Reject the follow request
-    const rejectQuery = `
-      DELETE FROM followers
-      WHERE follower_id = ${followerId}
-        AND followee_id = ${id};
-    `;
-
-    pool.query(rejectQuery, [followerId, id], (error) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      // Respond with a success message for rejection
-      res.json({ message: "Follow request rejected" });
     });
   } else {
-    // Handle invalid or unsupported actions
-    res.status(400).json({ error: "Invalid action" });
+    const query = ` DELETE FROM followers  where follower_id = ${follower_id} AND followee_id = ${id} `;
+    pool.query(query, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json("Server error");
+      } else {
+        return res.status(200).json("Follow request rejected");
+      }
+    });
   }
 };
 

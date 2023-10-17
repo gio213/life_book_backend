@@ -53,7 +53,7 @@ router.post("/follow_user_id", follow_user_id);
 // unfollow user by id protected route
 router.delete("/unfollow_user_id", unfollow_user_id);
 // accept reject follow request protected route
-router.put("/accept_reject_follow_request", acceptRejectFollowRequest);
+router.post("/accept_reject_follow_request", acceptRejectFollowRequest);
 // get current user followers protected route
 router.get("/get_current_user_followers", getCurrentUserFollowers);
 // user search protected route

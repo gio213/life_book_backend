@@ -12,7 +12,6 @@ const userSearch = (req, res) => {
   }
 
   const searchPattern = `%${userName}%`;
-
   const sql = `
   SELECT users.*,
          CASE
@@ -28,7 +27,9 @@ const userSearch = (req, res) => {
   ) AS followers
   ON users.user_id = followers.followee_id
   WHERE username LIKE '${searchPattern}'
-  AND users.user_id != ${id};
+  AND users.user_id != ${id}
+
+
 `;
 
   pool.query(sql, (err, result) => {
