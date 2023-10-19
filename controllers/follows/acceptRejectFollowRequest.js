@@ -7,15 +7,23 @@ const acceptRejectFollowRequest = (req, res) => {
   const { follower_id, accepted } = req.body;
   console.log(id);
   if (accepted === "1") {
+    const updateQuery = ` UPDATE followers SET accepted = 1 WHERE follower_id = ${follower_id} AND followee_id = ${id} `;
     const query = ` INSERT INTO followers (follower_id, followee_id, accepted)
 VALUES (${id}, ${follower_id}, 1);
 `;
-    pool.query(query, (err, result) => {
+    pool.query(updateQuery, (err, result) => {
       if (err) {
         console.error(err);
         return res.status(500).json("Server error");
       } else {
-        return res.status(200).json("Follow request accepted");
+        pool.query(query, (err, result) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json("Server error");
+          } else {
+            return res.status(200).json("Follow request accepted");
+          }
+        });
       }
     });
   } else {
