@@ -20,6 +20,7 @@ import getCurrentUserFollowers from "./routes/follows/getCurrentUserFollowers.js
 import userSearch from "./routes/user search/userSearch.js";
 import user_log_out from "./routes/user logout/userLogOut.js";
 import user_pass_reset from "./routes/password reset/user_pass_reset.js";
+import getNotifications from "./routes/notifications/notifications.js";
 // user register
 router.post("/user_register", user_register);
 // user login
@@ -62,5 +63,7 @@ router.post("/user_search", userSearch);
 router.get("/user_logout", user_log_out);
 // user password reset protected route
 router.put("/password_reset", user_pass_reset);
+// get notifications protected route
+router.get("/get_notifications", getNotifications);
 
 export default router;
