@@ -26,9 +26,7 @@ const userLogin = (req, res) => {
               httpOnly: true,
               maxAge: 60 * 60 * 24 * 1000,
             });
-            res.status(200).json({
-              token: token,
-            });
+            res.status(200).json({ message: "User logged in", token: token });
           } else {
             res.status(400).json({ message: "Password is incorrect" });
           }
