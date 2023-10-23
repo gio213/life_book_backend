@@ -40,7 +40,7 @@ router.delete("/delete_post/:id", delete_post_by_id);
 // get news feed for auth user protected route
 router.get("/get_feed_for_auth_user", get_feed_for_auth_user);
 // post like by post id protected route
-router.post("/post_like/:id", post_like);
+router.post("/post_like", post_like);
 // unlike post by post id protected route
 router.delete("/unlike_post/:id", unlike_post_by_id);
 // create comment by post id protected route

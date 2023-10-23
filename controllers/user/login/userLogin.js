@@ -10,7 +10,7 @@ const userLogin = (req, res) => {
     res.status(400).json({ message: "Please fill in all fields" });
   } else {
     pool.query(
-      "select * from users WHERE email = ?",
+      "select * from users WHERE email = ? ",
       [email],
       async (error, results) => {
         if (error) {
