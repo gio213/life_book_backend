@@ -22,7 +22,7 @@ const acceptRejectFollowRequest = (req, res) => {
             return res.status(500).json("Server error");
           } else {
             // Remove the notification row for the accepted request
-            const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow_request';`;
+            const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
 
             pool.query(deleteNotificationQuery, (err, result) => {
               if (err) {
@@ -45,7 +45,7 @@ const acceptRejectFollowRequest = (req, res) => {
         return res.status(500).json("Server error");
       } else {
         // Remove the notification row for the rejected request
-        const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow_request';`;
+        const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
 
         pool.query(deleteNotificationQuery, (err, result) => {
           if (err) {
