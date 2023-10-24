@@ -15,7 +15,8 @@ SELECT
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers,
+  posts.likes as likes
 FROM
   posts
   JOIN users ON users.user_id = posts.user_id
@@ -29,7 +30,8 @@ GROUP BY
   posts.post_image,
   author,
   profilePicture,
-  currentUserLiked
+  currentUserLiked,
+  likes
 
 UNION
 
@@ -45,7 +47,8 @@ SELECT
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers,
+  posts.likes as likes
 FROM
   posts
   JOIN followers ON followers.followee_id = posts.user_id
@@ -60,7 +63,8 @@ GROUP BY
   posts.post_image,
   author,
   profilePicture,
-  currentUserLiked
+  currentUserLiked,
+  likes
 
 UNION
 
@@ -76,7 +80,8 @@ SELECT
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers,
+  posts.likes as likes
 FROM
   posts
   JOIN followers ON followers.follower_id = posts.user_id
@@ -91,7 +96,8 @@ GROUP BY
   posts.post_image,
   author,
   profilePicture,
-  currentUserLiked
+  currentUserLiked,
+  likes
 
 ORDER BY created_at DESC;
 
