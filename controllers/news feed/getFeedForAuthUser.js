@@ -7,7 +7,7 @@ SELECT
   posts.*,
   users.username as author,
   users.profile_picture as profilePicture,
-  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${currentUserId}) as currentUserLiked,
+  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
   (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
 FROM
   posts
