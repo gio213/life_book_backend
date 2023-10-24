@@ -4,55 +4,94 @@ const get_feed_for_auth_user = async (req, res) => {
   const { id } = req.decoded.user_id;
   const query = `
 SELECT
-  posts.*,
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
   users.username as author,
   users.profile_picture as profilePicture,
   CASE
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers
 FROM
   posts
   JOIN users ON users.user_id = posts.user_id
 WHERE
   posts.user_id = ${id} -- User's own posts
+GROUP BY
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
+  author,
+  profilePicture,
+  currentUserLiked
 
 UNION
 
 SELECT
-  posts.*,
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
   users.username as author,
   users.profile_picture as profilePicture,
   CASE
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers
 FROM
   posts
   JOIN followers ON followers.followee_id = posts.user_id
   JOIN users ON users.user_id = posts.user_id
 WHERE
   (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
+GROUP BY
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
+  author,
+  profilePicture,
+  currentUserLiked
 
 UNION
 
 SELECT
-  posts.*,
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
   users.username as author,
   users.profile_picture as profilePicture,
   CASE
     WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
     ELSE 'false'
   END as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
+  JSON_ARRAYAGG(users.username) as likedByUsers
 FROM
   posts
   JOIN followers ON followers.follower_id = posts.user_id
   JOIN users ON users.user_id = posts.user_id
 WHERE
   (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
+GROUP BY
+  posts.post_id,
+  posts.user_id,
+  posts.content,
+  posts.created_at,
+  posts.post_image,
+  author,
+  profilePicture,
+  currentUserLiked
 
 ORDER BY created_at DESC;
 
