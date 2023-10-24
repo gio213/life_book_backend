@@ -19,8 +19,8 @@ const unlike_post_by_id = (req, res) => {
         .json({ message: "You have already liked this post." });
     }
 
-    // Insert a new like record into the 'likes' table
-    pool.query("DELETE from likes (post_id, user_id) VALUES (?, ?)", [
+    // delete a new like record into the 'likes' table
+    pool.query("DELETE FROM likes WHERE post_id = ? AND user_id = ?", [
       post_id,
       id,
     ]);
