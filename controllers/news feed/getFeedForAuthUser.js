@@ -7,8 +7,11 @@ SELECT
   posts.*,
   users.username as author,
   users.profile_picture as profilePicture,
-  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+  CASE
+    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
+    ELSE 'false'
+  END as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
 FROM
   posts
   JOIN users ON users.user_id = posts.user_id
@@ -21,8 +24,11 @@ SELECT
   posts.*,
   users.username as author,
   users.profile_picture as profilePicture,
-  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+  CASE
+    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
+    ELSE 'false'
+  END as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
 FROM
   posts
   JOIN followers ON followers.followee_id = posts.user_id
@@ -36,8 +42,11 @@ SELECT
   posts.*,
   users.username as author,
   users.profile_picture as profilePicture,
-  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
-  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+  CASE
+    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
+    ELSE 'false'
+  END as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM likes JOIN users ON likes.user_id = users.user_id WHERE likes.post_id = posts.post_id) as likedByUsers
 FROM
   posts
   JOIN followers ON followers.follower_id = posts.user_id
