@@ -37,4 +37,4 @@ const unlike_post_by_id = (req, res) => {
   }
 };
 
-export default post_like_by_post_id;
+export default unlike_post_by_id;

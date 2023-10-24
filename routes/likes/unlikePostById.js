@@ -5,6 +5,6 @@ import express from "express";
 
 const router = express.Router();
 
-router.delete("/unlike_post/:id", passToken, unlike_post_by_id);
+router.delete("/unlike_post", passToken, unlike_post_by_id);
 
 export default router;
