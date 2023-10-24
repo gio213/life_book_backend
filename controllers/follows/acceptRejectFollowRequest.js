@@ -23,15 +23,19 @@ const acceptRejectFollowRequest = (req, res) => {
           } else {
             // Remove the notification row for the accepted request
             const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
-
-            pool.query(deleteNotificationQuery, (err, result) => {
-              if (err) {
-                console.error(err);
-                return res.status(500).json("Server error");
-              } else {
-                return res.status(200).json("Follow request accepted");
+            const insertNotificationQuery = `INSERT INTO notifications (sender_id, receiver_id, type) VALUES (${id}, ${follower_id}, 'follow accepted');`;
+            pool.query(
+              deleteNotificationQuery,
+              insertNotificationQuery,
+              (err, result) => {
+                if (err) {
+                  console.error(err);
+                  return res.status(500).json("Server error");
+                } else {
+                  return res.status(200).json("Follow request accepted");
+                }
               }
-            });
+            );
           }
         });
       }
@@ -46,15 +50,20 @@ const acceptRejectFollowRequest = (req, res) => {
       } else {
         // Remove the notification row for the rejected request
         const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
+        const insertNotificationQuery = `INSERT INTO notifications (sender_id, receiver_id, type) VALUES (${id}, ${follower_id}, 'follow rejected');`;
 
-        pool.query(deleteNotificationQuery, (err, result) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).json("Server error");
-          } else {
-            return res.status(200).json("Follow request rejected");
+        pool.query(
+          deleteNotificationQuery,
+          insertNotificationQuery,
+          (err, result) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json("Server error");
+            } else {
+              return res.status(200).json("Follow request rejected");
+            }
           }
-        });
+        );
       }
     });
   }
