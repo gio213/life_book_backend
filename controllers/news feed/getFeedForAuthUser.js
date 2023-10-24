@@ -7,7 +7,8 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers,
+    (CASE WHEN EXISTS (SELECT 1 FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) THEN 'true' ELSE 'false' END) as currentUserLiked
   FROM
     posts
     JOIN users ON users.user_id = posts.user_id
@@ -22,7 +23,8 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers,
+    (CASE WHEN EXISTS (SELECT 1 FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) THEN 'true' ELSE 'false' END) as currentUserLiked
   FROM
     posts
     JOIN followers ON followers.followee_id = posts.user_id
@@ -38,10 +40,11 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers,
+    (CASE WHEN EXISTS (SELECT 1 FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) THEN 'true' ELSE 'false' END) as currentUserLiked
   FROM
     posts
-    JOIN followers ON followers.follower_id = posts.user_id
+    JOIN followers on followers.follower_id = posts.user_id
     JOIN users ON users.user_id = posts.user_id
     LEFT JOIN likes ON likes.post_id = posts.post_id
     LEFT JOIN users AS liked_users ON liked_users.user_id = likes.user_id
