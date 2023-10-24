@@ -3,43 +3,50 @@ import pool from "../../database/dbConnection.js";
 const get_feed_for_auth_user = async (req, res) => {
   const { id } = req.decoded.user_id;
   const query = `
-  SELECT
-    posts.*,
-    users.username as author,
-    users.profile_picture as profilePicture
-  FROM
-    posts
-    JOIN users ON users.user_id = posts.user_id
-  WHERE
-    posts.user_id = ${id} -- User's own posts
+SELECT
+  posts.*,
+  users.username as author,
+  users.profile_picture as profilePicture,
+  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${currentUserId}) as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+FROM
+  posts
+  JOIN users ON users.user_id = posts.user_id
+WHERE
+  posts.user_id = ${id} -- User's own posts
 
-  UNION
+UNION
 
-  SELECT
-    posts.*,
-    users.username as author,
-    users.profile_picture as profilePicture
-  FROM
-    posts
-    JOIN followers ON followers.followee_id = posts.user_id
-    JOIN users ON users.user_id = posts.user_id
-  WHERE
-    (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
+SELECT
+  posts.*,
+  users.username as author,
+  users.profile_picture as profilePicture,
+  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+FROM
+  posts
+  JOIN followers ON followers.followee_id = posts.user_id
+  JOIN users ON users.user_id = posts.user_id
+WHERE
+  (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
 
-  UNION
+UNION
 
-  SELECT
-    posts.*,
-    users.username as author,
-    users.profile_picture as profilePicture
-  FROM
-    posts
-    JOIN followers ON followers.follower_id = posts.user_id
-    JOIN users ON users.user_id = posts.user_id
-  WHERE
-    (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
+SELECT
+  posts.*,
+  users.username as author,
+  users.profile_picture as profilePicture,
+  EXISTS (SELECT 1 FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ${id}) as currentUserLiked,
+  (SELECT GROUP_CONCAT(users.username) FROM post_likes JOIN users ON post_likes.user_id = users.user_id WHERE post_likes.post_id = posts.post_id) as likedByUsers
+FROM
+  posts
+  JOIN followers ON followers.follower_id = posts.user_id
+  JOIN users ON users.user_id = posts.user_id
+WHERE
+  (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
 
-  ORDER BY created_at DESC;
+ORDER BY created_at DESC;
+
 `;
 
   console.log(query);
