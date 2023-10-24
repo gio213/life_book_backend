@@ -4,102 +4,52 @@ const get_feed_for_auth_user = async (req, res) => {
   const { id } = req.decoded.user_id;
   const query = `
 SELECT
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  users.username as author,
-  users.profile_picture as profilePicture,
-  CASE
-    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
-    ELSE 'false'
-  END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers,
-  posts.likes as likes
-FROM
-  posts
-  JOIN users ON users.user_id = posts.user_id
-WHERE
-  posts.user_id = ${id} -- User's own posts
-GROUP BY
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  author,
-  profilePicture,
-  currentUserLiked,
-  likes
-
-UNION
-
-SELECT
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  users.username as author,
-  users.profile_picture as profilePicture,
-  CASE
-    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
-    ELSE 'false'
-  END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers,
-  posts.likes as likes
-FROM
-  posts
-  JOIN followers ON followers.followee_id = posts.user_id
-  JOIN users ON users.user_id = posts.user_id
-WHERE
-  (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
-GROUP BY
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  author,
-  profilePicture,
-  currentUserLiked,
-  likes
-
-UNION
-
-SELECT
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  users.username as author,
-  users.profile_picture as profilePicture,
-  CASE
-    WHEN (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id AND likes.user_id = ${id}) > 0 THEN 'true'
-    ELSE 'false'
-  END as currentUserLiked,
-  JSON_ARRAYAGG(users.username) as likedByUsers,
-  posts.likes as likes
-FROM
-  posts
-  JOIN followers ON followers.follower_id = posts.user_id
-  JOIN users ON users.user_id = posts.user_id
-WHERE
-  (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
-GROUP BY
-  posts.post_id,
-  posts.user_id,
-  posts.content,
-  posts.created_at,
-  posts.post_image,
-  author,
-  profilePicture,
-  currentUserLiked,
-  likes
-
-ORDER BY created_at DESC;
+    posts.*,
+    users.username as author,
+    users.profile_picture as profilePicture,
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+  FROM
+    posts
+    JOIN users ON users.user_id = posts.user_id
+    LEFT JOIN likes ON likes.post_id = posts.post_id
+    LEFT JOIN users AS liked_users ON liked_users.user_id = likes.user_id
+  WHERE
+    posts.user_id = ${id} -- User's own posts
+  GROUP BY
+    posts.post_id, author, profilePicture
+  UNION
+  SELECT
+    posts.*,
+    users.username as author,
+    users.profile_picture as profilePicture,
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+  FROM
+    posts
+    JOIN followers ON followers.followee_id = posts.user_id
+    JOIN users ON users.user_id = posts.user_id
+    LEFT JOIN likes ON likes.post_id = posts.post_id
+    LEFT JOIN users AS liked_users ON liked_users.user_id = likes.user_id
+  WHERE
+    (followers.follower_id = ${id} AND followers.accepted = 1) -- Posts by those followed
+  GROUP BY
+    posts.post_id, author, profilePicture
+  UNION
+  SELECT
+    posts.*,
+    users.username as author,
+    users.profile_picture as profilePicture,
+    JSON_ARRAYAGG(liked_users.username) as likedByUsers
+  FROM
+    posts
+    JOIN followers ON followers.follower_id = posts.user_id
+    JOIN users ON users.user_id = posts.user_id
+    LEFT JOIN likes ON likes.post_id = posts.post_id
+    LEFT JOIN users AS liked_users ON liked_users.user_id = likes.user_id
+  WHERE
+    (followers.followee_id = ${id} AND followers.accepted = 1) -- Posts by those who follow the user
+  GROUP BY
+    posts.post_id, author, profilePicture
+  ORDER BY created_at DESC;
 
 `;
 
