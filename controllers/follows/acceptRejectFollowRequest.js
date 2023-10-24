@@ -1,72 +1,72 @@
 import pool from "../../database/dbConnection.js";
 
-const acceptRejectFollowRequest = (req, res) => {
+const acceptRejectFollowRequest = async (req, res) => {
   const {
     user_id: { id },
   } = req.decoded;
   const { follower_id, accepted } = req.body;
+
   console.log(id);
 
-  if (accepted === "1") {
-    const updateQuery = `UPDATE followers SET accepted = 1 WHERE follower_id = ${follower_id} AND followee_id = ${id}`;
-    const query = `INSERT INTO followers (follower_id, followee_id, accepted) VALUES (${id}, ${follower_id}, 1);`;
+  try {
+    if (accepted === "1") {
+      await acceptFollowRequest(id, follower_id);
+    } else {
+      await rejectFollowRequest(id, follower_id);
+    }
 
-    pool.query(updateQuery, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Server error");
-      } else {
-        pool.query(query, (err, result) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).json("Server error");
-          } else {
-            // Remove the notification row for the accepted request
-            const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
-            const insertNotificationQuery = `INSERT INTO notifications (sender_id, receiver_id, type) VALUES (${id}, ${follower_id}, 'follow accepted');`;
-            pool.query(
-              deleteNotificationQuery,
-              insertNotificationQuery,
-              (err, result) => {
-                if (err) {
-                  console.error(err);
-                  return res.status(500).json("Server error");
-                } else {
-                  return res.status(200).json("Follow request accepted");
-                }
-              }
-            );
-          }
-        });
-      }
-    });
-  } else {
-    const query = `DELETE FROM followers WHERE follower_id = ${follower_id} AND followee_id = ${id}`;
-
-    pool.query(query, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Server error");
-      } else {
-        // Remove the notification row for the rejected request
-        const deleteNotificationQuery = `DELETE FROM notifications WHERE sender_id = ${follower_id} AND receiver_id = ${id} AND type = 'follow request';`;
-        const insertNotificationQuery = `INSERT INTO notifications (sender_id, receiver_id, type) VALUES (${id}, ${follower_id}, 'follow rejected');`;
-
-        pool.query(
-          deleteNotificationQuery,
-          insertNotificationQuery,
-          (err, result) => {
-            if (err) {
-              console.error(err);
-              return res.status(500).json("Server error");
-            } else {
-              return res.status(200).json("Follow request rejected");
-            }
-          }
-        );
-      }
-    });
+    return res
+      .status(200)
+      .json(
+        accepted === "1" ? "Follow request accepted" : "Follow request rejected"
+      );
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json("Server error");
   }
+};
+
+const acceptFollowRequest = async (id, follower_id) => {
+  const updateQuery =
+    "UPDATE followers SET accepted = 1 WHERE follower_id = ? AND followee_id = ?";
+  const insertQuery =
+    "INSERT INTO followers (follower_id, followee_id, accepted) VALUES (?, ?, 1)";
+
+  const deleteNotificationQuery =
+    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'follow request'";
+  const insertNotificationQuery =
+    "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, 'follow accepted')";
+
+  await executeQuery(updateQuery, [follower_id, id]);
+  await executeQuery(insertQuery, [id, follower_id]);
+  await executeQuery(deleteNotificationQuery, [follower_id, id]);
+  await executeQuery(insertNotificationQuery, [id, follower_id]);
+};
+
+const rejectFollowRequest = async (id, follower_id) => {
+  const deleteQuery =
+    "DELETE FROM followers WHERE follower_id = ? AND followee_id = ?";
+  const deleteNotificationQuery =
+    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'follow request'";
+  const insertNotificationQuery =
+    "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, 'follow rejected')";
+
+  await executeQuery(deleteQuery, [follower_id, id]);
+  await executeQuery(deleteNotificationQuery, [follower_id, id]);
+  await executeQuery(insertNotificationQuery, [id, follower_id]);
+};
+
+// Helper function to execute queries with error handling
+const executeQuery = (query, values) => {
+  return new Promise((resolve, reject) => {
+    pool.query(query, values, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
 };
 
 export default acceptRejectFollowRequest;
