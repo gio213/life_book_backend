@@ -33,7 +33,7 @@ const acceptFollowRequest = async (id, follower_id) => {
     "INSERT INTO followers (follower_id, followee_id, accepted) VALUES (?, ?, 1)";
 
   const deleteNotificationQuery =
-    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'Accepted  your follow request'";
+    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'follow request'";
   const insertNotificationQuery =
     "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ' Accepted  your follow request')";
 
@@ -47,7 +47,7 @@ const rejectFollowRequest = async (id, follower_id) => {
   const deleteQuery =
     "DELETE FROM followers WHERE follower_id = ? AND followee_id = ?";
   const deleteNotificationQuery =
-    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'Rejected  your follow request'";
+    "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'follow request'";
   const insertNotificationQuery =
     "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ' Rejected  your follow request')";
 
