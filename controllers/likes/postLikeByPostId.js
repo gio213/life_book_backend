@@ -25,6 +25,11 @@ const post_like_by_post_id = (req, res) => {
       id,
     ]);
 
+    pool.query(
+      "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ?)",
+      [id, post_id, "like"]
+    );
+
     // Update the 'likes' column in the 'posts' table
     pool.query("UPDATE posts SET likes = likes + 1 WHERE post_id = ?", [
       post_id,

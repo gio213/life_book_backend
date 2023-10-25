@@ -24,6 +24,10 @@ const unlike_post_by_id = (req, res) => {
       post_id,
       id,
     ]);
+    pool.query(
+      "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = ?",
+      [id, post_id, "like"]
+    );
 
     // Update the 'likes' column in the 'posts' table
     pool.query("UPDATE posts SET likes = likes - 1 WHERE post_id = ?", [
