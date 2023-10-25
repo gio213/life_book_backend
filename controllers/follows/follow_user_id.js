@@ -3,7 +3,7 @@ import pool from "../../database/dbConnection.js";
 const followUserId = async (req, res) => {
   const { id } = req.decoded.user_id;
   const followee_id = req.body.followee_id;
-  const type = "follow request";
+  const type = "Sent you a follow request";
 
   const query =
     "INSERT INTO followers (follower_id, followee_id) VALUES (?, ?)";
