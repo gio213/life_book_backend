@@ -27,7 +27,7 @@ const post_like_by_post_id = (req, res) => {
 
     pool.query(
       "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ?)",
-      [id, post_id, "like"]
+      [id, post_id, "Liked your post"]
     );
 
     // Update the 'likes' column in the 'posts' table

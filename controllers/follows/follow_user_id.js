@@ -39,7 +39,7 @@ const followUserId = async (req, res) => {
           } else {
             console.log(notificationResult);
             res.status(200).json({
-              message: "Successfully followed user and notification sent",
+              message: "Follow request sent successfully",
             });
           }
         }
