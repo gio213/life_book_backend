@@ -44,7 +44,7 @@ router.post("/post_like", post_like);
 // unlike post by post id protected route
 router.delete("/unlike_post", unlike_post_by_id);
 // create comment by post id protected route
-router.post("/create_comment/:id", create_comment_by_post_id);
+router.post("/create_comment", create_comment_by_post_id);
 // delete comment by id protected route
 router.delete("/delete_comment/:id", delete_comment_by_id);
 // edit comment by comment id protected route
