@@ -55,12 +55,12 @@ const create_comment_by_post_id = (req, res) => {
               } else {
                 // Check if the comment author is not the same as the post author
                 if (id !== postAuthorId) {
-                  const insertNotificationQuery =
-                    "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ?)";
+                  const insertNotificationQuery = ` INSERT INTO notifications (sender_id, receiver_id, post_id, type) VALUES (?, ?, ?, ?)`;
                   const notificationValues = [
                     id,
                     postAuthorId,
-                    " Commented on your post",
+                    post_id,
+                    "Commented on your post",
                   ];
 
                   connection.query(
