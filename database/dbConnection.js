@@ -15,14 +15,3 @@ const pool = mysql.createPool({
 });
 
 export default pool;
-
-// const pool = mysql.createPool({
-//   MYSQLHOST: process.env.DB_HOST,
-//   MYSQLUSER: process.env.DB_USERNAME,
-//   MYSQLPASSWORD: process.env.DB_PASSWORD,
-//   MYSQLDATABASE: process.env.DB_DBNAME,
-//   MYSQLPORT: process.env.DB_PORT,
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-// });
