@@ -39,8 +39,8 @@ const unlike_post_by_id = async (req, res) => {
     // Delete the notification record from the 'notifications' table
     await new Promise((resolve, reject) => {
       pool.query(
-        "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND type = 'Liked your post'",
-        [id, postAuthorId],
+        "DELETE FROM notifications WHERE sender_id = ? AND receiver_id = ? AND post_id = ? AND type = 'Liked your post'",
+        [id, postAuthorId, post_id],
         (error, results) => {
           if (error) {
             reject(error);

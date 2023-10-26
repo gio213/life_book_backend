@@ -39,8 +39,8 @@ const post_like_by_post_id = async (req, res) => {
     // Insert a new notification record into the 'notifications' table
     await new Promise((resolve, reject) => {
       pool.query(
-        "INSERT INTO notifications (sender_id, receiver_id, type) VALUES (?, ?, ?)",
-        [id, postAuthorId, "Liked your post"],
+        "INSERT INTO notifications (sender_id, receiver_id, post_id, type) VALUES (?, ?, ?, ?)",
+        [id, postAuthorId, post_id, "Liked your post"],
         (error, results) => {
           if (error) {
             reject(error);
