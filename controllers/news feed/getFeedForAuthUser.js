@@ -7,7 +7,7 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture, 'created_at', comments.created_at)) as commentedByUsers,
+    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture)) as commentedByUsers,
     (SELECT JSON_ARRAYAGG(liked_user.username) FROM (
         SELECT DISTINCT liked_users.username
         FROM likes
@@ -29,7 +29,7 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture, 'created_at', comments.created_at)) as commentedByUsers,
+    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture)) as commentedByUsers,
     (SELECT JSON_ARRAYAGG(liked_user.username) FROM (
         SELECT DISTINCT liked_users.username
         FROM likes
@@ -52,7 +52,7 @@ SELECT
     posts.*,
     users.username as author,
     users.profile_picture as profilePicture,
-    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture, 'created_at', comments.created_at)) as commentedByUsers,
+    JSON_ARRAYAGG(JSON_OBJECT('username', comment_users.username, 'content', comments.content, 'profilePicture', comment_users.profile_picture)) as commentedByUsers,
     (SELECT JSON_ARRAYAGG(liked_user.username) FROM (
         SELECT DISTINCT liked_users.username
         FROM likes
