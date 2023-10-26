@@ -1,29 +1,8 @@
 import pool from "../../database/dbConnection.js";
-
-const { id } = req.decoded.user_id;
-console.log(id);
+const { id } = id;
 const post_id = req.body.post_id;
 
 try {
-  // Check if the user has liked the post
-  const existingLike = await new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM likes WHERE post_id = ? AND user_id = ?",
-      [post_id, id],
-      (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
-
-  if (existingLike.length === 0) {
-    return res.status(400).json({ message: "You haven't liked this post." });
-  }
-
   // Delete the like record from the 'likes' table
   await new Promise((resolve, reject) => {
     pool.query(
