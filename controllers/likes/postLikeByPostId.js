@@ -4,30 +4,8 @@ const post_like_by_post_id = async (req, res) => {
   const { id } = req.decoded.user_id;
   console.log(id);
   const post_id = req.body.post_id;
-  // check if user already liked this post
 
   try {
-    // Check if the user has already liked the post
-    const existingLike = await new Promise((resolve, reject) => {
-      pool.query(
-        "SELECT * FROM likes WHERE post_id = ? AND user_id = ?",
-        [post_id, id],
-        (error, results) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(results);
-          }
-        }
-      );
-    });
-
-    if (existingLike.length > 0) {
-      return res
-        .status(400)
-        .json({ message: "You have already liked this post." });
-    }
-
     // Insert a new like record into the 'likes' table
     await new Promise((resolve, reject) => {
       pool.query(
