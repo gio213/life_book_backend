@@ -6,21 +6,6 @@ const post_like_by_post_id = async (req, res) => {
   const post_id = req.body.post_id;
 
   try {
-    // Insert a new like record into the 'likes' table
-    await new Promise((resolve, reject) => {
-      pool.query(
-        "INSERT INTO likes (post_id, user_id) VALUES (?, ?)",
-        [post_id, id],
-        (error, results) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(results);
-          }
-        }
-      );
-    });
-
     // Retrieve the post_author_id from the 'posts' table
     const postAuthorId = await new Promise((resolve, reject) => {
       pool.query(
@@ -36,11 +21,29 @@ const post_like_by_post_id = async (req, res) => {
       );
     });
 
-    // Insert a new notification record into the 'notifications' table
+    // Check if sender_id is different from id
+    if (postAuthorId !== id) {
+      // Insert a new notification record into the 'notifications' table
+      await new Promise((resolve, reject) => {
+        pool.query(
+          "INSERT INTO notifications (sender_id, receiver_id, post_id, type) VALUES (?, ?, ?, ?)",
+          [id, postAuthorId, post_id, "Liked your post"],
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
+    }
+
+    // Insert a new like record into the 'likes' table
     await new Promise((resolve, reject) => {
       pool.query(
-        "INSERT INTO notifications (sender_id, receiver_id, post_id, type) VALUES (?, ?, ?, ?)",
-        [id, postAuthorId, post_id, "Liked your post"],
+        "INSERT INTO likes (post_id, user_id) VALUES (?, ?)",
+        [post_id, id],
         (error, results) => {
           if (error) {
             reject(error);
