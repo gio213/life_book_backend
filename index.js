@@ -22,6 +22,7 @@ import user_log_out from "./routes/user logout/userLogOut.js";
 import user_pass_reset from "./routes/password reset/user_pass_reset.js";
 import getNotifications from "./routes/notifications/notifications.js";
 import create_message from "./routes/messages/createMessage.js";
+import get_messages from "./routes/messages/getMessages.js";
 // user register
 router.post("/user_register", user_register);
 // user login
@@ -68,5 +69,7 @@ router.put("/password_reset", user_pass_reset);
 router.get("/get_notifications", getNotifications);
 // create message protected route
 router.post("/create_message", create_message);
+// get messages protected route
+router.get("/get_messages", get_messages);
 
 export default router;
