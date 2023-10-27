@@ -88,14 +88,16 @@ GROUP BY
 ORDER BY created_at DESC;
 `;
 
-  console.log(query);
   pool.query(query, [id], (err, result) => {
     if (err) {
       console.log(err);
       console.log(query);
       res.status(500).json({ message: "Internal server error" });
     } else {
-      console.log(result);
+      console.log(
+        "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+        result.map(({ commentedByUsers }) => commentedByUsers)
+      );
       res.status(200).json({ message: "Posts from you follow", result });
     }
   });
