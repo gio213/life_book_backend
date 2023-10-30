@@ -10,7 +10,7 @@ const sendWelcomeEmail = (username, email) => {
       from: "gio.patsia@gmail.com",
       to: email,
       subject: "Welcome to our website",
-      text: `Hello ${username}, welcome to our website. We are happy to have you here.`,
+      text: `Hello ${username}, welcome to  Lifebook. We are happy to have you here.`,
     },
     (err, info) => {
       if (err) {
