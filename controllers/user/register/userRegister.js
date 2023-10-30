@@ -7,7 +7,7 @@ import transporter from "../../../config/nodemailer.js";
 const sendWelcomeEmail = (username, email) => {
   transporter.sendMail(
     {
-      from: "gio.patsia@gmail.com",
+      from: process.env.GMAIL_USER,
       to: email,
       subject: "Welcome to our website",
       text: `Hello ${username}, welcome to  Lifebook. We are happy to have you here.`,

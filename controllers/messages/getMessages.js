@@ -30,7 +30,7 @@ WHERE (
       console.log(err);
       res.status(500).json({ error: "Error getting messages" });
     } else if (result.length === 0) {
-      res.status(404).json({ error: "No  conversations found" });
+      res.status(200).json({ result: "No  conversations found" });
     } else {
       res.status(200).json({ result });
     }
