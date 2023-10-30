@@ -2,6 +2,7 @@ import pool from "../../database/dbConnection.js";
 
 const get_messages = async (req, res) => {
   const { id } = req.decoded.user_id; // Current user ID
+  console.log(id);
   const { user_id } = req.body;
 
   const query = `SELECT

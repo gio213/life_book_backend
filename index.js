@@ -70,6 +70,6 @@ router.get("/get_notifications", getNotifications);
 // create message protected route
 router.post("/create_message", create_message);
 // get messages protected route
-router.get("/get_messages", get_messages);
+router.post("/get_messages", get_messages);
 
 export default router;
