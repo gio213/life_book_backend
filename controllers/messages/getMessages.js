@@ -28,11 +28,10 @@ WHERE (
   pool.query(query, [id, user_id, user_id, id], (err, result) => {
     if (err) {
       console.log(err);
-      res.status(500).json({ error: "Error getting messages" });
-    } else if (result.length === 0) {
-      res.status(200).json({ result: "No  conversations found" });
+      res.status(500).json({ error: "Something went wrong" });
     } else {
-      res.status(200).json({ result });
+      console.log(result);
+      res.status(200).json(result);
     }
   });
 };
