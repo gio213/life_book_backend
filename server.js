@@ -17,16 +17,26 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+let onlineUsers = [];
 io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("disconnect", () => {
-    console.log("user disconnected", socket.id);
+  console.log("New user connected with id: " + socket.id);
+  // listen custom connection event
+  socket.on("addUsers", (onlineUsers, userId) => {
+    !onlineUsers.some((user) => user.userId === userId) &&
+      onlineUsers.push({ userId, socketId: socket.id });
+
+    console.log(onlineUsers);
+    socket.emit("getOnlineUsers", onlineUsers);
   });
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-    io.emit("chat message", msg);
+
+  socket.on("disconect", (userId) => {
+    onlineUsers = onlineUsers.filter((user) => user.userId !== userId);
+    console.log(onlineUsers);
+    socket.emit("disconect", onlineUsers);
+    console.log("user disconnected");
   });
 });
+console.log(onlineUsers);
 
 app.use(express.json());
 app.use(bodyParser.json());
