@@ -43,15 +43,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: [
-    "https://lifebook-frontend.vercel.app",
-    "http://localhost:5173",
-    "https://jsonlink.io/",
-  ],
+  origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credential: true,
+  credentials: true,
 };
+
 app.use(cors(corsOptions));
+
 
 app.use("/api", router);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagerData));
