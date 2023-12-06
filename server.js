@@ -56,7 +56,7 @@ app.use(cors(corsOptions));
 app.use("/api", router);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagerData));
 
-let port = process.env.PORT || 3000;
+let port =  3000;
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}...`);
