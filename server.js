@@ -49,7 +49,7 @@ const corsOptions = {
     "https://jsonlink.io/",
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  Credentials: true,
+  credential: true,
 };
 app.use(cors(corsOptions));
 
